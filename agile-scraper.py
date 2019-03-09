@@ -6,7 +6,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-user_password = os.environ['USER_PASS']
+user_login_value = os.environ['USER_LOGIN']
+user_password_value = os.environ['USER_PASS']
 
 
 class PageObject:
@@ -27,11 +28,11 @@ class LoginPageObject(PageObject):
 
         user_login = self.browser.find_element_by_id("user_login")
         user_login.clear()
-        user_login.send_keys("jus.beall@gmail.com")
+        user_login.send_keys(user_login_value)
 
         user_login = self.browser.find_element_by_id("user_pass")
         user_login.clear()
-        user_login.send_keys(user_password)
+        user_login.send_keys(user_password_value)
 
         submit = self.browser.find_element_by_id("wp-submit")
         submit.click()
