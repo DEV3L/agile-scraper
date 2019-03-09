@@ -11,9 +11,11 @@ setup(
         keywords=['beautifulsoup', 'python'],
         install_requires=[
             'beautifulsoup4==4.6.3',
-            'requests==2.20.0'
+            'requests==2.20.0',
+            'selenium==3.141.0'
         ],
         classifiers=[
             'License :: OSI Approved :: MIT License',
-            'Programming Language :: Python :: 3',
+            'Programming Language :: Python :: 3'
+        ]
 )
