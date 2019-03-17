@@ -3,7 +3,10 @@ import os
 from app.models.speaker import Speaker
 from app.page_objects.login_page_object import LoginPageObject
 from app.page_objects.page_object import PageObject
+from environs import Env
 from selenium import webdriver
+
+Env().read_env(path="./.env")
 
 user_login_value = os.environ['USER_LOGIN']
 user_password_value = os.environ['USER_PASS']
