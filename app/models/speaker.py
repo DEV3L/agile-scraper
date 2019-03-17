@@ -11,6 +11,3 @@ class Speaker(Model):
     def from_web_element(self, web_element: WebElement):
         self.url = web_element.get_attribute('href')
         self.speaker_name = web_element.text
-
-    def __str__(self):
-        return f'speaker_name:{self.speaker_name}|_id:{self._id}|url:{self.url}'

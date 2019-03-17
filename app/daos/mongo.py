@@ -17,6 +17,7 @@ class MongoDatabase:
         self.mongo_db = client[db_name]
 
     def create(self, collection: str, entity: dict) -> str:
+        del entity['_id']
         insert_object = self.mongo_db[collection].insert_one(entity)
         return str(insert_object.inserted_id)
 
