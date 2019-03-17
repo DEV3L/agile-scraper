@@ -21,6 +21,6 @@ class Session(Model):
         self.url = web_element.get_attribute('data-vote-url').replace('/vote', '')
 
         speaker_text = " ".join(session_tokens[2:-3])
-        speaker_text = speaker_text.replace(session_name, '')
+        speaker_text = speaker_text.replace(self.session_name, '')
         speaker_text = speaker_text.replace('about', '').strip()
         self.speaker_text = speaker_text

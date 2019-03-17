@@ -5,7 +5,7 @@ from app.daos.mongo import MongoDatabase
 from app.models.session import Session
 
 
-class SpeakerDao(Dao):
+class SessionDao(Dao):
     def __init__(self, mongo_database: MongoDatabase):
         super().__init__(mongo_database, 'sessions')
 
