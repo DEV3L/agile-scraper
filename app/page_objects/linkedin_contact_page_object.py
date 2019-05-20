@@ -23,15 +23,14 @@ class LinkedInContactPageObject(PageObject):
         email = ''
 
         try:
-            self.wait_by_class_name("ci-phone")
-            phone = self.browser.find_element_by_class_name('ci-phone').text
-        except Exception as e:
-            print("Could not find phone number")
-
-        try:
             self.wait_by_class_name("ci-email")
             email = self.browser.find_element_by_class_name('ci-email').text
         except Exception as e:
             print("Could not find email address")
+
+        try:
+            phone = self.browser.find_element_by_class_name('ci-phone').text
+        except Exception as e:
+            pass
 
         return {"phone": phone, "email": email}

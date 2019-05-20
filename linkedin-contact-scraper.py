@@ -14,7 +14,7 @@ Env().read_env(path="./.env")
 user_login_value = os.environ['USER_LOGIN']
 user_password_value = os.environ['USER_PASS']
 
-data_file = './data/justin_connections.csv'
+data_file = './data/gene_connections.csv'
 
 
 class Contact:
@@ -37,16 +37,25 @@ with open(data_file) as csvfile:
     contacts = [Contact(row) for row in data_rows]
 
 if __name__ == '__main__':
+    print("Begin LinkedIn Contact Scraper - For the modern Jew at MedaSync")
+
+    print(f'Starting to Process {len(contacts)} contacts')
+
     browser = webdriver.Chrome()
 
     login_page = LinkedInLoginPageObject(browser, user_login_value, user_password_value)
     login_page.login()
 
+    print(f'Logged into LinkedIn with user {user_login_value}')
+
     contact_count = 0
 
     for contact in contacts:
+        print(f'Looking for contact: {contact.first_name} {contact.last_name}')
+
         linkedin_feed_page = LinkedInFeedPageObject(browser)
-        linkedin_feed_page.search_contact(contact)
+        if not linkedin_feed_page.search_contact(contact):
+            continue
 
         linkedin_search_results = LinkedInSearchResultsPageObject(browser)
         contact_links = linkedin_search_results.scrape_contact_links()
@@ -64,12 +73,22 @@ if __name__ == '__main__':
             contact_count += 1
             break
 
-        if contact_count > 5:
-            break
+        if contact_count % 10 == 0:
+            print(f'Writing records: {contact_count} of {len(contacts)}')
+
+            with open('results.csv', mode='w') as results:
+                results_writer = csv.writer(results, delimiter=',')
+
+                results_writer.writerow(
+                    ['First Name', 'Last Name', 'Email', 'Phone', 'Company', 'Title', 'Connected On'])
+                for contact in contacts:
+                    results_writer.writerow(contact.dump())
 
     browser.close()
 
     with open('results.csv', mode='w') as results:
+        print(f'Writing records: {contact_count} of {len(contacts)}')
+
         results_writer = csv.writer(results, delimiter=',')
 
         results_writer.writerow(['First Name', 'Last Name', 'Email', 'Phone', 'Company', 'Title', 'Connected On'])

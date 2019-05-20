@@ -17,4 +17,10 @@ class LinkedInFeedPageObject(PageObject):
         search_input.send_keys(f'{contact.first_name} {contact.last_name}')
         search_input.send_keys(Keys.ENTER)
 
-        self.wait_by_class_name("search-results__total")
+        try:
+            self.wait_by_class_name("search-results__total")
+        except Exception as e:
+            print('Could not find results for contact')
+            return False
+
+        return True
