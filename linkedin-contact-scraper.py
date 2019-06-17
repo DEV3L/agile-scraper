@@ -23,7 +23,6 @@ results_file = f'./output/{file_prefix}_results.csv'
 
 def run():
     print(f'Begin LinkedIn Contact Scraper - For {user_login_value}')
-    print("- for the modern Jew on the go, now at MedaSync")
 
     contact_results = read_results_file(results_file)
     mapped_contacts = {contact.key: contact for contact in contact_results}
@@ -54,45 +53,41 @@ def run():
             write_records(mapped_contacts.values(), contact_count)
 
     browser.close()
-    write_records(mapped_contacts.values(), contact_count)
+
+    _contacts = filter_contacts(mapped_contacts.values())
+    write_records(_contacts, contact_count)
 
     print(f'Finished LinkedIn Contact Scraper - For {user_login_value}')
 
 
 def filter_contacts(contacts):
-    results = read_results_file(result_file)
-    results = [result for result in results if result.email or result.phone]
-    filtered_contacts = []
+    results = read_results_file(results_file)
+    filtered_results = [result for result in results if result.email or result.phone]
+    results_map = {result.key: result for result in results}
+
     for contact in contacts:
-        is_found = False
+        if contact.key not in results_map:
+            filtered_results.append(contact)
 
-        for result_contact in results:
-            if result_contact.key == contact.key:
-                is_found = True
-                break
-
-        if not is_found:
-            filtered_contacts.append(contact)
-
-    return filtered_contacts
+    return filtered_results
 
 
-def read_data_file(data_file: str):
-    data_rows = _read_file(data_file)
+def read_data_file(input_data_file: str):
+    data_rows = _read_file(input_data_file)
     return [Contact.from_row_data(row) for row in data_rows]
 
 
-def read_results_file(results_file: str):
+def read_results_file(input_results_file: str):
     try:
-        results = _read_file(results_file)
+        results = _read_file(input_results_file)
         return [Contact.from_result_data(result) for result in results]
     except Exception as e:
         return []
 
 
 def _read_file(file_name: str):
-    with open(file_name) as csvfile:
-        csv_data = csv.reader(csvfile)
+    with open(file_name) as csv_file:
+        csv_data = csv.reader(csv_file)
         data_rows = [row for row in csv_data][1:]
     return data_rows
 
