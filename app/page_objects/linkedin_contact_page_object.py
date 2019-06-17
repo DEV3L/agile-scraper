@@ -16,6 +16,8 @@ class LinkedInContactPageObject(PageObject):
         if dist_value.text != '1st':
             return
 
+        location = self.browser.find_element_by_class_name('pv-top-card-section__location').text
+
         contact_info_link = self.browser.find_element_by_xpath("//*[@data-control-name='contact_see_more']")
         contact_info_link.click()
 
@@ -33,4 +35,4 @@ class LinkedInContactPageObject(PageObject):
         except Exception as e:
             pass
 
-        return {"phone": phone, "email": email}
+        return {"phone": phone, "email": email, "location": location}

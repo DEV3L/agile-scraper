@@ -46,10 +46,15 @@ def run():
             continue
 
         print(f'Looking for contact: {contact.first_name} {contact.last_name}')
-        contact_count = scrape_contact(contact, contact_count, contacts, browser)
+        contact_count = scrape_contact(contact, contact_count, browser)
+
+        mapped_contacts[contact.key] = contact
+
+        if should_write(contact_count):
+            write_records(mapped_contacts.values(), contact_count)
 
     browser.close()
-    write_records(contacts, contact_count)
+    write_records(mapped_contacts.values(), contact_count)
 
     print(f'Finished LinkedIn Contact Scraper - For {user_login_value}')
 
@@ -92,7 +97,7 @@ def _read_file(file_name: str):
     return data_rows
 
 
-def scrape_contact(contact, contact_count: int, contacts, browser):
+def scrape_contact(contact, contact_count: int, browser):
     linkedin_feed_page = LinkedInFeedPageObject(browser)
     if not linkedin_feed_page.search_contact(contact):
         return contact_count
@@ -105,13 +110,12 @@ def scrape_contact(contact, contact_count: int, contacts, browser):
         contact_details = linkedin_contact_page.scrape_contact()
 
         if not contact_details:
+            print('Did not retrieve contact details')
             continue
 
         contact.email = contact_details['email'].replace('\n', '').replace('Email', '')
         contact.phone = contact_details['phone'].replace('\n', '').replace('Phone', '')
-
-        if should_write(contact_count):
-            write_records(contacts, contact_count)
+        contact.location = contact_details['location']
 
         return contact_count + 1
 
@@ -124,7 +128,8 @@ def write_records(contacts, contact_count):
 
         results_writer = csv.writer(results, delimiter=',')
 
-        results_writer.writerow(['First Name', 'Last Name', 'Email', 'Phone', 'Company', 'Title', 'Connected On'])
+        results_writer.writerow(
+            ['First Name', 'Last Name', 'Email', 'Phone', 'Company', 'Title', 'Connected On', 'Location'])
         for contact in contacts:
             results_writer.writerow(contact.dump())
 
@@ -142,13 +147,15 @@ class Contact:
         self.company = None
         self.position = None
         self.connected_on = None
+        self.location = None
 
     @property
     def key(self):
         return self.first_name + self.last_name + self.position
 
     def dump(self):
-        return [self.first_name, self.last_name, self.email, self.phone, self.company, self.position, self.connected_on]
+        return [self.first_name, self.last_name, self.email, self.phone, self.company, self.position, self.connected_on,
+                self.location]
 
     @staticmethod
     def from_row_data(row_data):
@@ -175,6 +182,7 @@ class Contact:
         contact.company = result_data[4]
         contact.position = result_data[5]
         contact.connected_on = result_data[6]
+        contact.location = result_data[7]
 
         return contact
 
