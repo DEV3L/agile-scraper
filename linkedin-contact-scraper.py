@@ -16,9 +16,9 @@ user_password_value = os.environ['USER_PASS']
 
 write_records_buffer = 10
 
-file_prefix = user_login_value.split('@')[0]
-data_file = f'./data/{file_prefix}_connections.csv'
-results_file = f'./output/{file_prefix}_results.csv'
+file_prefix = user_login_value.split('@')[0] + '_'
+data_file = f'./data/{file_prefix}connections.csv'
+results_file = f'./output/{file_prefix}results.csv'
 
 
 def run():
@@ -67,6 +67,7 @@ def filter_contacts(contacts):
 
     for contact in contacts:
         if contact.key not in results_map:
+            print(f'Adding contact {contact.key}')
             filtered_results.append(contact)
 
     return filtered_results
@@ -118,6 +119,7 @@ def scrape_contact(contact, contact_count: int, browser):
 
 
 def write_records(contacts, contact_count):
+    # with open(results_file, mode='w', newline='') as results:
     with open(results_file, mode='w') as results:
         print(f'Writing records: {contact_count} of {len(contacts)}')
 
