@@ -12,7 +12,9 @@ setup(
     install_requires=[
         'environs==4.1.0',
         'pymongo==3.7.2',
-        'selenium==3.141.0'
+        'selenium==3.141.0',
+        'requests',
+        'beautifulsoup4'
     ],
     classifiers=[
         'License :: OSI Approved :: MIT License',
